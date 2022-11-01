@@ -4,11 +4,16 @@
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "serve": "npm run build && firebase emulators:start --only functions",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore --import=./data --export-on-exit=./data",
+    "serve:functions": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "db:export": "firestore-export -a ./serviceAccountKey.json -b ./data/firestore.json",
+    "db:import": "firestore-import -a ./serviceAccountKey.json -b ./data/firestore.json",
+    "db:emulator:export": "set FIRESTORE_EMULATOR_HOST=localhost:8080& npm run db:export",
+    "db:emulator:import": "set FIRESTORE_EMULATOR_HOST=localhost:8080& npm run db:import"
   },
   "engines": {
     "node": "16"
