@@ -9,7 +9,7 @@ export const getRoutes = functions.https.onCall(async (data) => {
   functions.logger.info(`Get routes: ${data.id}`, {structuredData: true});
   const routes: unknown[] = [];
   const snapshot: QuerySnapshot = await db.collection("test_route").get();
-  snapshot.forEach((doc) => {
+  snapshot.forEach(doc => {
     const data = doc.data();
     const element = {
       id: doc.id,
