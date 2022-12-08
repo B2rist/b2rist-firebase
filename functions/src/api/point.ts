@@ -10,18 +10,19 @@ interface NearByPointsRequest {
     latitude: number,
     longitude: number
 },
-  radius: number
+  radius: number,
+  languages: string[] | string
 }
 
 export const getNearbyPoints = functions.https
     .onCall(async (data: NearByPointsRequest) => {
       try {
-        const {location: {latitude, longitude}, radius}:
+        const {location: {latitude, longitude}, radius, languages}:
             NearByPointsRequest = data;
         const center: Geopoint = [latitude, longitude];
+        const lang = [languages].flat();
         // eslint-disable-next-line max-len
-        functions.logger.info(`Get nearby points: ${center[0]}-${center[1]}: ${data.radius} km`,
-            {structuredData: true});
+        functions.logger.info(`Get nearby points: ${center[0]},${center[1]} radius: ${data.radius} km languages: ${lang.join(",")}`);
 
         const radiusInM: number = radius * 1000;
 
@@ -29,6 +30,7 @@ export const getNearbyPoints = functions.https
         const promises: Promise<QuerySnapshot>[] = [];
         for (const b of bounds) {
           const q = db.collection("test_point")
+              .where("language", "in", lang)
               .orderBy("geohash")
               .startAt(b[0])
               .endAt(b[1]);
