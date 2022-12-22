@@ -1,4 +1,4 @@
-# b2rist-firebase
+# be2rist-firebase
 
 ## Description
 
