@@ -5,7 +5,7 @@ import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentReference = firestore.DocumentReference;
 import {db} from "../index";
 
-export const getRoutes = functions.https.onCall(async (data) => {
+export const getAll = functions.https.onCall(async (data) => {
   functions.logger.info(`Get routes: ${data.id}`, {structuredData: true});
   const routes: unknown[] = [];
   const snapshot: QuerySnapshot = await db.collection("test_route").get();
@@ -22,7 +22,7 @@ export const getRoutes = functions.https.onCall(async (data) => {
   return routes;
 });
 
-export const getRouteById = functions.https.onCall(async ({id}) => {
+export const getById = functions.https.onCall(async ({id}) => {
   functions.logger.info(`Get route by id: ${id}`, {structuredData: true});
   const snapshot: DocumentSnapshot = await db.collection("test_route")
       .doc(id).get();
