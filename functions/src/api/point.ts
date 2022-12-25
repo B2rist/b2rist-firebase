@@ -31,8 +31,9 @@ export const getAllNearby = functions.https
         const bounds = geofire.geohashQueryBounds(center, radiusInM);
         const promises: Promise<QuerySnapshot>[] = [];
         for (const b of bounds) {
-          const q = db.collection("test_point")
+          const q = db.collection("point")
               .where("language", "in", lang)
+              .where("isRoute", "==", false)
               .orderBy("geohash")
               .startAt(b[0])
               .endAt(b[1]);
@@ -75,7 +76,7 @@ export const getAllNearby = functions.https
 
 export const getById = functions.https.onCall(async ({id}) => {
   functions.logger.info(`Get point by id: ${id}`, {structuredData: true});
-  const snapshot: DocumentSnapshot = await db.collection("test_point")
+  const snapshot: DocumentSnapshot = await db.collection("point")
       .doc(id).get();
   if (!snapshot.exists) {
     throw new functions.https.HttpsError("not-found", "Not found");
@@ -97,8 +98,10 @@ export const getAllByUser = functions.https.onCall(
       functions.logger.info(`Get user points: ${email}`,
           {structuredData: true});
       const points: unknown[] = [];
-      const snapshot: QuerySnapshot = await db.collection("test_point")
-          .where("user", "==", email).get();
+      const snapshot: QuerySnapshot = await db.collection("point")
+          .where("user", "==", email)
+          .where("isRoute", "==", false)
+          .get();
       snapshot.forEach((doc) => {
         const data = doc.data();
         const element = {
